@@ -1,11 +1,11 @@
-# Pipeline CI/CD Android con GitHub Actions
+# Pipeline CI/CD para Android con GitHub Actions
 
-## Autor
+## Información del Estudiante
 
-**Nombre:** Jhoseth Esneider Rozo Carrillo  
-**Código:** 02230131027  
+**Nombre:** Ángel Rizo Arias  
+**Código:** 02230132004  
 **Programa:** Ingeniería de Sistemas  
-**Unidad:** Unidad 10 – CI/CD, Publicación y Operación  
+**Unidad:** Unidad 10 – Integración, Entrega y Operación (CI/CD)  
 **Actividad:** Post-Contenido 1  
 **Fecha:** 14/05/2026
 
@@ -13,51 +13,54 @@
 
 # Estado del Pipeline
 
-![Android CI/CD](https://github.com/jerc31/Rizo-post1_u10/actions/workflows/androidci.yml/badge.svg)
+![Android CI/CD](https://github.com/02230132004-miguel/Rizo_Arias-post1-u10/actions/workflows/androidci.yml/badge.svg)
 
-Workflow:  
-https://github.com/jerc31/Rozo-post1_u10/actions/workflows/androidci.yml
+Repositorio del workflow:  
+https://github.com/02230132004-miguel/Rizo_Arias-post1-u10/actions/workflows/androidci.yml
 
 ---
 
 # Descripción del Proyecto
 
-Este proyecto implementa un pipeline CI/CD completo para una aplicación Android utilizando GitHub Actions.
+Este proyecto consiste en la implementación de un flujo de integración y entrega continua (CI/CD) para una aplicación Android, utilizando GitHub Actions como herramienta principal de automatización.
 
-El flujo automatiza el proceso de integración continua y distribución continua de la aplicación, incluyendo:
+El objetivo es automatizar todo el ciclo de construcción y validación del software, desde el análisis del código hasta la generación y publicación del APK.
 
-- Análisis estático de código con Lint
-- Ejecución de pruebas unitarias
-- Generación de APK Release firmado
-- Distribución automática con Firebase App Distribution
-- Verificación de cobertura con JaCoCo
-- Quality Gate de cobertura mínima
+El pipeline contempla:
+
+- Revisión del código con Lint  
+- Ejecución de pruebas unitarias automatizadas  
+- Generación del APK en modo release  
+- Firma digital del APK mediante Keystore  
+- Publicación automática en Firebase App Distribution  
+- Medición de cobertura de pruebas con JaCoCo  
+- Validación de calidad mínima del código  
 
 ---
 
-# Objetivo
+# Objetivo del Proyecto
 
-Implementar un pipeline CI/CD funcional para Android que permita:
+El propósito de este trabajo es desarrollar un pipeline CI/CD que permita:
 
-- Automatizar pruebas y validaciones
-- Generar APK Release firmado con Keystore
-- Gestionar credenciales mediante GitHub Secrets
-- Distribuir builds automáticamente en Firebase
-- Configurar un Quality Gate de cobertura mínima
-- Generar reportes automáticos de pruebas y cobertura
+- Automatizar procesos de validación del código  
+- Garantizar builds confiables y repetibles  
+- Gestionar credenciales de forma segura con GitHub Secrets  
+- Generar y firmar aplicaciones Android automáticamente  
+- Distribuir versiones en Firebase sin intervención manual  
+- Controlar la calidad del software mediante cobertura de pruebas  
 
 ---
 
 # Tecnologías Utilizadas
 
-- Kotlin
-- Android Studio
-- GitHub Actions
-- Firebase App Distribution
-- JaCoCo
-- Gradle
-- YAML
-- PowerShell
+- Kotlin  
+- Android Studio  
+- Gradle  
+- GitHub Actions  
+- Firebase App Distribution  
+- JaCoCo  
+- YAML  
+- PowerShell / Bash  
 
 ---
 
@@ -81,11 +84,11 @@ README.md
 
 # Configuración de Firebase App Distribution
 
-En el proyecto se configuró Firebase App Distribution para automatizar la distribución de builds release.
+Se integró Firebase App Distribution para automatizar la entrega de versiones de la aplicación a testers.
 
-## Plugin configurado
+## Configuración del plugin
 
-### build.gradle.kts (raíz)
+### build.gradle.kts (nivel raíz)
 
 ```kotlin
 plugins {
@@ -93,7 +96,7 @@ plugins {
 }
 ```
 
-### build.gradle.kts (app)
+### build.gradle.kts (módulo app)
 
 ```kotlin
 plugins {
@@ -103,11 +106,9 @@ plugins {
 
 ---
 
-# Configuración de Signing
+# Configuración de Firma (Keystore)
 
-El proyecto utiliza un Keystore para firmar automáticamente el APK release.
-
-## Configuración utilizada
+El APK se firma automáticamente dentro del pipeline utilizando variables de entorno que contienen la información del keystore.
 
 ```kotlin
 signingConfigs {
@@ -122,156 +123,90 @@ signingConfigs {
 
 ---
 
-# Configuración de GitHub Secrets
+# Gestión de Secrets en GitHub
 
-Se configuraron los siguientes secrets en:
+Las credenciales sensibles se almacenan en GitHub Secrets para evitar su exposición en el repositorio:
 
-```text
-Settings → Secrets and variables → Actions
-```
-
-| Secret          | Descripción                   |
-| --------------- | ----------------------------- |
-| KEYSTORE_BASE64 | Keystore codificado en Base64 |
-| KEYSTORE_PASS   | Contraseña del Keystore       |
-| KEY_ALIAS       | Alias del Keystore            |
-| KEY_PASS        | Contraseña del alias          |
-| FIREBASE_APP_ID | App ID de Firebase            |
-| FIREBASE_TOKEN  | Token Firebase CLI            |
+| Variable | Descripción |
+|----------|-------------|
+| KEYSTORE_BASE64 | Keystore en formato Base64 |
+| KEYSTORE_PASS | Contraseña del almacén de claves |
+| KEY_ALIAS | Alias de la clave |
+| KEY_PASS | Contraseña del alias |
+| FIREBASE_APP_ID | ID de la aplicación en Firebase |
+| FIREBASE_TOKEN | Token de autenticación Firebase CLI |
 
 ---
 
-# Workflow CI/CD
+# Arquitectura del Pipeline
 
-El workflow principal se encuentra en:
+El flujo de CI/CD se divide en dos etapas principales:
+
+## 1. Etapa de validación
+
+Encargada de asegurar la calidad del código antes de generar el build:
+
+- Análisis estático con Lint  
+- Ejecución de pruebas unitarias  
+- Generación de reporte de cobertura  
+- Aplicación de Quality Gate  
+
+## 2. Etapa de construcción y despliegue
+
+Responsable de generar y distribuir la aplicación:
+
+- Compilación del APK en release  
+- Firma del APK  
+- Publicación en Firebase App Distribution  
+
+---
+
+# Flujo General del Pipeline
+
+```text
+Inicio (Push / Pull Request)
+        ↓
+Validación del código fuente
+        ↓
+Ejecución de pruebas automatizadas
+        ↓
+Generación de cobertura (JaCoCo)
+        ↓
+Validación Quality Gate
+        ↓
+Construcción del APK Release
+        ↓
+Firma digital del APK
+        ↓
+Publicación en Firebase App Distribution
+```
+
+---
+
+# Workflow en GitHub Actions
+
+Ubicación del archivo:
 
 ```text
 .github/workflows/androidci.yml
 ```
 
-## Flujo implementado
+El pipeline ejecuta automáticamente:
 
-1. Checkout del proyecto
-2. Configuración de Java 17
-3. Cache de Gradle
-4. Ejecución de Lint
-5. Ejecución de pruebas unitarias
-6. Generación de reporte JaCoCo
-7. Verificación de cobertura
-8. Build APK Release firmado
-9. Distribución automática en Firebase
-
----
-
-# Workflow YAML
-
-```yaml
-name: Android CI/CD
-
-on:
-  push:
-    branches: [main, develop]
-
-  pull_request:
-    branches: [main]
-
-jobs:
-  lint-and-test:
-    name: Lint y Pruebas Unitarias
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: temurin
-
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Ejecutar Lint
-        run: ./gradlew lintDebug
-
-      - name: Ejecutar Unit Tests
-        run: ./gradlew testDebugUnitTest
-
-      - name: Generar reporte JaCoCo
-        run: ./gradlew jacocoTestReport
-
-      - name: Subir resultados de pruebas
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: unit-test-results
-          path: "**/build/reports/tests/**"
-
-      - name: Subir reporte de cobertura
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: app/build/reports/jacoco/jacocoTestReport/html/
-
-      - name: Quality Gate Coverage > 60%
-        run: |
-          if [ -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml ]; then
-            COVERAGE=$(python3 -c "import xml.etree.ElementTree as ET; tree = ET.parse('app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'); root = tree.getroot(); line_counter = [c for c in root.findall('counter') if c.get('type') == 'LINE'][0]; covered = int(line_counter.get('covered')); missed = int(line_counter.get('missed')); print(covered / (covered + missed))")
-            echo "Line coverage is $COVERAGE"
-            python3 -c "import sys; sys.exit(0 if float($COVERAGE) >= 0.60 else 1)"
-          else
-            echo "Jacoco report not found"
-            exit 1
-          fi
-
-  build-and-distribute:
-    name: Build y Distribución
-    runs-on: ubuntu-latest
-    needs: lint-and-test
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: temurin
-
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release-key.jks
-          echo "KEYSTORE_PATH=$(pwd)/release-key.jks" >> $GITHUB_ENV
-
-      - name: Build Release APK
-        env:
-          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
-          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASS: ${{ secrets.KEY_PASS }}
-        run: ./gradlew assembleRelease
-
-      - name: Distribuir en Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          file: app/build/outputs/apk/release/app-release.apk
-          releaseNotes: "Build ${{ github.run_number }} — ${{ github.sha }}"
-```
+- Clonación del repositorio  
+- Configuración de Java 17  
+- Caché de dependencias Gradle  
+- Lint del proyecto  
+- Pruebas unitarias  
+- Generación de cobertura  
+- Construcción del APK  
+- Distribución en Firebase  
 
 ---
 
 # Configuración de JaCoCo
 
-Se configuró JaCoCo para generar reportes HTML y XML de cobertura.
-
-## Configuración implementada
+Se utiliza JaCoCo para medir la cobertura de pruebas:
 
 ```kotlin
 jacoco {
@@ -287,23 +222,21 @@ tasks.withType<Test> {
 
 # Quality Gate de Cobertura
 
-El pipeline implementa un Quality Gate que bloquea el build si la cobertura de líneas es inferior al 60%.
+El pipeline establece un mínimo del 60% de cobertura en líneas de código.
 
-## Objetivo del Quality Gate
-
-Garantizar que el código distribuido tenga un mínimo de pruebas automatizadas antes de ser publicado.
+Si este porcentaje no se cumple, el proceso de despliegue se detiene automáticamente.
 
 ---
 
-# Verificación de APK Firmado
+# Verificación del APK Firmado
 
-Para verificar la firma del APK se utilizó:
+Para validar la firma del APK se usa:
 
 ```powershell
-& "C:\Android\Sdk\build-tools\37.0.0\apksigner.bat" verify --verbose "app/build/outputs/apk/release/app-release.apk"
+apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
 ```
 
-## Resultado esperado
+Resultado esperado:
 
 ```text
 Verified using v2 scheme (APK Signature Scheme v2): true
@@ -311,69 +244,13 @@ Verified using v2 scheme (APK Signature Scheme v2): true
 
 ---
 
-# Pruebas Unitarias
-
-Se implementaron pruebas unitarias para aumentar la cobertura real del proyecto.
-
-## Ejemplo de prueba
+# Prueba Unitaria de Ejemplo
 
 ```kotlin
 @Test
-fun sumaCorrecta() {
-    assertEquals(4, calculator.suma(2, 2))
+fun validarSuma() {
+    assertEquals(4, calculator.sumar(2, 2))
 }
-```
-
----
-
-# Checkpoints Verificados
-
-## ✓ Checkpoint 1: Pipeline Básico Funcional
-
-- Workflow `androidci.yml` configurado
-- GitHub Secrets configurados
-- Job `lint-and-test` ejecutado correctamente
-- Artifacts generados correctamente
-
----
-
-## ✓ Checkpoint 2: Build Firmado y Distribuido
-
-- Build Release ejecutado correctamente
-- APK firmado verificado con `apksigner`
-- Distribución exitosa en Firebase App Distribution
-- Builds visibles en Firebase Console
-
----
-
-## ✓ Checkpoint 3: Quality Gate Configurado
-
-- JaCoCo configurado correctamente
-- Reportes HTML generados
-- Artifacts de cobertura subidos al workflow
-- Pipeline validando cobertura mínima
-- Badge documentado en README
-
----
-
-# Flujo Completo del Pipeline
-
-```text
-Push/Pull Request
-        ↓
-Lint
-        ↓
-Unit Tests
-        ↓
-JaCoCo Coverage
-        ↓
-Quality Gate
-        ↓
-Build Release APK
-        ↓
-Firma con Keystore
-        ↓
-Firebase App Distribution
 ```
 
 ---
