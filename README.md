@@ -13,7 +13,7 @@
 
 # Estado del Pipeline
 
-![Android CI/CD](https://github.com/jerc31/Rozo-post1_u10/actions/workflows/androidci.yml/badge.svg)
+![Android CI/CD](https://github.com/jerc31/Rizo-post1_u10/actions/workflows/androidci.yml/badge.svg)
 
 Workflow:  
 https://github.com/jerc31/Rozo-post1_u10/actions/workflows/androidci.yml
